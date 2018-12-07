@@ -1,6 +1,7 @@
 import Datamap from 'datamaps';
 import COLORS from './colors';
 import * as d3Geo from 'd3-geo';
+import * as d3 from 'd3';
 import { normalizeCountryName } from './utilities';
 import countries from '../data/countries.json';
 
@@ -38,13 +39,13 @@ export default class DataVizMap {
     this.datamap.resize();
   }
 
-  loadArcs(groupedDataArr, numYears, focusCountries) {
+  loadArcs(groupedDataArr, numYears, focusCountries, hovering) {
+    d3.selectAll(`.datamap .datamaps-subunit`).style("fill", COLORS.WHITE);
     let arcs = groupedDataArr.map(data => {
       const c = data.count / numYears;
-      const idx = focusCountries 
-        ? focusCountries.indexOf(data.origin)
-        : topCountryCodes.indexOf(data.origin);
-      const strokeColor = (opacity) => `rgba(169, 120, 120, ${opacity})`;
+      const idx = focusCountries.indexOf(data.origin);    
+      d3.select(`.datamap .${data.origin}`)
+        .style("fill", idx == 0 ? (hovering ? 'rgba(121,94,153, 0.5)' : 'rgba(153,68,0,0.8)') : 'rgba(169, 120, 120, 0.5)');
       return {
         origin: {
           latitude: countries[data.origin].latitude,
@@ -54,6 +55,7 @@ export default class DataVizMap {
           latitude: countries[data.destination].latitude,
           longitude: countries[data.destination].longitude
         },
+        originCode: data.origin,
         options: {
           strokeWidth: c > 160000 ? 4
             : c > 80000 ? 3.5
@@ -63,8 +65,7 @@ export default class DataVizMap {
             : c > 5000 ? 1.5 
             : c > 2500 ? 1 
             : 0.5,
-          strokeColor: idx == 0 ? COLORS.RED
-              : strokeColor(0.6),
+          strokeColor: idx == 0 ? (hovering ? 'rgba(121,94,153, 1)' : COLORS.RED) : 'rgba(169, 120, 120, 0.5)',
           animationSpeed: 2200
         }
       }

@@ -7,40 +7,29 @@
   <title>Lines of Conflict - 40 Years of Crisis Induced Displacement</title>
   <link href="https://fonts.googleapis.com/css?family=Alegreya+Sans|Didact+Gothic" rel="stylesheet">
   <link rel="stylesheet" text="text/css" href="styles/main.css">
+  <link rel="stylesheet" text="text/css" href="styles/bar.css">
   <script type="text/javascript" src="dist/bundle.js"></script>
-  <style>
-    .bar {
-	    fill: rgba(169, 120, 120, 0.8);
-    }
-    .focus-bar {
-      fill: #994400;
-    }
-    .axis path,
-    .axis line {
-      fill: none;
-      stroke: #D4D8DA;
-      stroke-width: 1px;
-    }
-    .y path {
-      display: none;
-    }
-  </style>
 </head>
 
 <body>
   <div id="boundingBox">
+    <svg id="barchart-container" width="400" height="550"></svg>
     <div id="map-container"></div>
-    <svg id="barchart-container" width="400" height="400"></svg>
     <div id="controlPnl">
       <div id="previous-pnl-btn" class="controlPnl-btn">
-        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24">
+        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24">
           <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />
         </svg>
       </div>
       <div id="next-pnl-btn" class="controlPnl-btn">
-        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24">
+        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24">
           <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z" />
         </svg>
+      </div>
+      <div id="info-btn" class="controlPnl-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
+          </svg>
       </div>
     </div>
     <div id="titlePnl">

@@ -4,6 +4,8 @@ body {
   padding: 0;
   overflow-x: hidden;
   overflow-y: hidden;
+  color: #333;
+  font-family: 'Didact Gothic', sans-serif;
 }
 
 h1,
@@ -29,14 +31,15 @@ h3 {
 
 #barchart-container {
   position: absolute;
-  bottom: 100px;
+  bottom: 95px;
 }
 
 #controlPnl {
   position: absolute;
   bottom: 0;
   right: 0;
-  margin: 14px 18px;
+  margin: 4px 14px;
+  z-index: 3;
 }
 
 #titlePnl {
@@ -49,6 +52,8 @@ h3 {
 #titlePnl h1 {
   margin: 0;
   font-size: 32pt;
+  line-height: 30pt;
+  color: #752e2e;
 }
 
 #titlePnl h2 {
@@ -84,16 +89,19 @@ h3 {
 .controlPnl-btn {
   display: inline-block;
 }
+.controlPnl-btn svg path {
+  fill: #333;
+}
 
 .controlPnl-btn:hover {
   cursor: pointer;
 }
 
 .controlPnl-btn:hover svg path {
-  fill: #FFFFFF;
+  fill: #994400;
 }
 
-.controlPnl-btn img {
-  height: 48px;
-  width: 48px;
-}
+/* .controlPnl-btn img {
+  height: 64px;
+  width: 64px;
+} */

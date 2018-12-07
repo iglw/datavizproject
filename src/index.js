@@ -2,10 +2,12 @@ import 'core-js';
 import DataVizMap from './dataVizMap';
 import BarChart from './dataVizBar';
 import refugees from '../data/refugees';
+import * as d3 from 'd3';
 
 let map = null;
 let bar = null;
 let currentPanel = 0;
+let hoverBar = false;
 
 class StoryPanel {
   constructor(title, minYear, maxYear, countries) {
@@ -19,16 +21,12 @@ class StoryPanel {
 const storyPanels = [
   new StoryPanel('Vietnam War (1975-1995)', 1975, 1995, ['VNM']),
   new StoryPanel('Iran-Iraq War (1980-1988)', 1980, 1988, ['IRQ']),
-  new StoryPanel('Somali Invasion of Ethiopia (1977-1979)', 1977, 1979, ['ETH']),
   new StoryPanel('Civil War in Mozambique (1976-1992)', 1976, 1992, ['MOZ']),
-  new StoryPanel('Soviet Invasion of Afghanistan (1979)', 1979, 1979, ['AFG']),
-  new StoryPanel('Iraqi Suppression of rebel movement (1991)', 1991, 1991, ['IRQ']),
   new StoryPanel('Rwandan Genocide (1994)', 1993, 1996, ['RWA']),
-  new StoryPanel('Breakup of Yugoslavia (1994-1995)', 1994, 1995, ['BIH']),
-  new StoryPanel('US Invasion of Iraq & Subsquent Civil War (2003-2016+)', 2003, 2016, ['SYR']),
+  new StoryPanel('Iraq War (2003-2011)', 2003, 2011, ['IRQ']),
   new StoryPanel('War in Syria (2011-2016+)', 2011, 2016, ['SYR']),
   new StoryPanel('South Sudanese Civil War (2013-2015)', 2013, 2015, ['SSD']),
-  new StoryPanel('Top Sources of Refugees 1975-2016', 1975, 2016, []),
+  new StoryPanel('Top Refugees Origin Countries 1975-2016', 1975, 2016, []),
 ];
 
 function getPanelData(yearMin, yearMax) {
@@ -89,7 +87,7 @@ function loadPanel(minYear, maxYear, countries) {
   const numYears = maxYear - minYear + 1;
   const { groupedDataArr, totals } = getPanelData(minYear, maxYear);
   map.loadArcs(groupedDataArr, numYears, countries);
-  bar.loadBars(groupedDataArr, numYears, countries, totals);
+  bar.loadBars(groupedDataArr, numYears, countries, totals, map);
 
   //console.log(countries[0], total[countries[0]].toLocaleString());
 }
@@ -125,4 +123,23 @@ window.addEventListener('load', () => {
 });
 window.addEventListener('resize', () => {
   map.resize();
+});
+
+window.addEventListener("mousemove", (e) => {
+  // hover issues with chart overlapping map
+  if ((e.clientX < 74 && e.clientY > 150) 
+    || (e.clientX < 280 && e.clientY > 350) 
+    || (e.clientX < 400 && e.clientY > 600)) {
+    if (!hoverBar) {
+      hoverBar = true;
+      d3.select('#barchart-container').style("z-index", 1);
+      d3.select('#map-container').style("z-index", 0);
+    }
+  } else {
+    if (hoverBar) {
+      hoverBar = false;
+      d3.select('#barchart-container').style("z-index", 0);
+      d3.select('#map-container').style("z-index", 1);
+    }
+  }
 });

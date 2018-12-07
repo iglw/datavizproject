@@ -1,0 +1,29 @@
+.bar {
+  fill: rgba(169, 120, 120, 0.8);
+}
+.bar:hover {
+  cursor: pointer;
+  fill: rgba(121,94,153, 1);
+}
+.focus-bar {
+  fill: #994400;
+}
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #D4D8DA;
+  stroke-width: 1px;
+}
+.x .tick line {
+  display: none;
+}
+.tooltip {
+  z-index: 2;
+  position: absolute;
+  display: none;
+  min-width: 80px;
+  height: auto;
+  background: none repeat scroll 0 0 #ffffff;
+  padding: 14px;
+  text-align: center;
+}
