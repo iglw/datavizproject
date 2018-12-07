@@ -6,110 +6,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Lines of Conflict - 40 Years of Crisis Induced Displacement</title>
   <link href="https://fonts.googleapis.com/css?family=Alegreya+Sans|Didact+Gothic" rel="stylesheet">
+  <link rel="stylesheet" text="text/css" href="styles/main.css">
   <script type="text/javascript" src="dist/bundle.js"></script>
   <style>
-    body {
-      background-color: #85a0b7;
-      margin: 0;
-      padding: 0;
-      overflow-x: hidden;
-      overflow-y: hidden;
+    .bar {
+	    fill: rgba(169, 120, 120, 0.8);
     }
-
-    h1,
-    h2 {
-      font-family: 'Alegreya Sans', sans-serif;
+    .focus-bar {
+      fill: #994400;
     }
-
-    h3 {
-      font-family: 'Didact Gothic', sans-serif;
+    .axis path,
+    .axis line {
+      fill: none;
+      stroke: #D4D8DA;
+      stroke-width: 1px;
     }
-
-    #boundingBox {
-      width: 1368px;
-      height: 800px;
-      position: relative;
-      overflow: hidden;
-      margin: 0 auto;
-    }
-
-    #container {
-      background-color: none;
-    }
-
-    #controlPnl {
-      position: absolute;
-      bottom: 0;
-      right: 0;
-      margin: 14px 18px;
-    }
-
-    #titlePnl {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      /* text-align: right; */
-      margin: 14px 18px;
-    }
-
-    #titlePnl h1 {
-      margin: 0;
-      font-size: 32pt;
-    }
-
-    #titlePnl h2 {
-      margin: 0;
-      font-style: italic;
-      font-size: 18pt;
-    }
-
-    #panelInfo {
-      position: absolute;
-      bottom: 0;
-      left: 550px;
-    }
-
-    #panelInfo h3 {
-      margin: 0;
-      font-size: 20pt;
-      margin: 14px;
-      /* color: #994400; */
-    }
-
-    .datamaps-arc {
-      stroke-linecap: unset !important;
-    }
-
-    .hover-info {
-      box-shadow: none !important;
-    }
-
-    .datamaps-subunit:hover {
-      cursor: pointer;
-    }
-
-    .controlPnl-btn {
-      display: inline-block;
-    }
-
-    .controlPnl-btn:hover {
-      cursor: pointer;
-    }
-
-    .controlPnl-btn:hover svg path {
-      fill: #FFFFFF;
-    }
-
-    .controlPnl-btn img {
-      height: 48px;
-      width: 48px;
+    .y path {
+      display: none;
     }
   </style>
 </head>
 
 <body>
   <div id="boundingBox">
-    <div id="container"></div>
+    <div id="map-container"></div>
+    <svg id="barchart-container" width="400" height="400"></svg>
     <div id="controlPnl">
       <div id="previous-pnl-btn" class="controlPnl-btn">
         <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24">

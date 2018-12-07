@@ -1,0 +1,99 @@
+body {
+  background-color: #b1bcc5;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
+h1,
+h2 {
+  font-family: 'Alegreya Sans', sans-serif;
+}
+
+h3 {
+  font-family: 'Didact Gothic', sans-serif;
+}
+
+#boundingBox {
+  width: 1368px;
+  height: 800px;
+  position: relative;
+  overflow: hidden;
+  margin: 0 auto;
+}
+
+#map-container {
+  background-color: none;
+}
+
+#barchart-container {
+  position: absolute;
+  bottom: 100px;
+}
+
+#controlPnl {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  margin: 14px 18px;
+}
+
+#titlePnl {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  margin: 14px 18px;
+}
+
+#titlePnl h1 {
+  margin: 0;
+  font-size: 32pt;
+}
+
+#titlePnl h2 {
+  margin: 0;
+  font-style: italic;
+  font-size: 18pt;
+}
+
+#panelInfo {
+  position: absolute;
+  bottom: 0;
+  left: 550px;
+}
+
+#panelInfo h3 {
+  margin: 0;
+  font-size: 20pt;
+  margin: 14px;
+}
+
+.datamaps-arc {
+  stroke-linecap: unset !important;
+}
+
+.hover-info {
+  box-shadow: none !important;
+}
+
+.datamaps-subunit:hover {
+  cursor: pointer;
+}
+
+.controlPnl-btn {
+  display: inline-block;
+}
+
+.controlPnl-btn:hover {
+  cursor: pointer;
+}
+
+.controlPnl-btn:hover svg path {
+  fill: #FFFFFF;
+}
+
+.controlPnl-btn img {
+  height: 48px;
+  width: 48px;
+}

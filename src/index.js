@@ -1,7 +1,10 @@
 import 'core-js';
 import DataVizMap from './dataVizMap';
+import BarChart from './dataVizBar';
+import refugees from '../data/refugees';
 
 let map = null;
+let bar = null;
 let currentPanel = 0;
 
 class StoryPanel {
@@ -28,19 +31,82 @@ const storyPanels = [
   new StoryPanel('Top Sources of Refugees 1975-2016', 1975, 2016, []),
 ];
 
+function getPanelData(yearMin, yearMax) {
+  const originCounter = {};
+  const invalidCountryCodes = ['XXY'];
+  const numberToLoad = 10;
+
+  const filteredData = refugees.filter(r => r[2] >= yearMin && r[2] <= yearMax)
+    .map(r => {
+      const data = {
+        destination: r[0],
+        origin: r[1],
+        year: r[2],
+        count: r[3]
+      };
+      if (originCounter[data.origin]) {
+        originCounter[data.origin].value += data.count;
+      } else {
+        originCounter[data.origin] = {
+          key: data.origin,
+          value: data.count
+        };
+      }
+      return data;
+    });
+
+  let sortedCountries = Object.keys(originCounter).map(key => originCounter[key]).sort((a, b) => b.value - a.value);
+  let topCountryCodes = sortedCountries
+    .filter(c => invalidCountryCodes.indexOf(c.key) === -1)
+    .slice(0, numberToLoad)
+    .map(c => c.key);
+  let topCountryData = filteredData
+    .filter(data => topCountryCodes.indexOf(data.origin) > -1 && data.count > 1000);
+
+  // Total data across years by destination
+  let groupedData = {};
+  let totals = {};
+  for (let i = 0; i < topCountryData.length; i++) {
+    const dataPoint = topCountryData[i];
+    const key = `${dataPoint.origin}${dataPoint.destination}`;
+    if (groupedData[key]) {
+      groupedData[key].count += dataPoint.count;
+    } else {
+      groupedData[key] = dataPoint;
+    }
+    if (totals[dataPoint.origin]) {
+      totals[dataPoint.origin] += dataPoint.count;
+    } else {
+      totals[dataPoint.origin] = dataPoint.count;
+    }
+  }
+
+  const groupedDataArr = Object.keys(groupedData).map(key => groupedData[key]);
+  return { groupedDataArr, totals };
+}
+
+function loadPanel(minYear, maxYear, countries) {
+  const numYears = maxYear - minYear + 1;
+  const { groupedDataArr, totals } = getPanelData(minYear, maxYear);
+  map.loadArcs(groupedDataArr, numYears, countries);
+  bar.loadBars(groupedDataArr, numYears, countries, totals);
+
+  //console.log(countries[0], total[countries[0]].toLocaleString());
+}
+
 function initControls() {
   document.getElementById('previous-pnl-btn').addEventListener('mousedown', () => {
     if (currentPanel === 0) return;
     currentPanel--;
     const pnl = storyPanels[currentPanel];
-    map.loadArcs(pnl.minYear, pnl.maxYear, pnl.countries);
+    loadPanel(pnl.minYear, pnl.maxYear, pnl.countries)
     setTitle(pnl.title);
   });
   document.getElementById('next-pnl-btn').addEventListener('mousedown', () => {
     if (currentPanel === storyPanels.length - 1) return;
     currentPanel++;
     const pnl = storyPanels[currentPanel];
-    map.loadArcs(pnl.minYear, pnl.maxYear, pnl.countries);
+    loadPanel(pnl.minYear, pnl.maxYear, pnl.countries);
     setTitle(pnl.title);
   });
 }
@@ -52,8 +118,9 @@ function setTitle(title) {
 window.addEventListener('load', () => {
   const pnl = storyPanels[currentPanel];
   map = new DataVizMap();
-  map.loadArcs(pnl.minYear, pnl.maxYear, pnl.countries);
+  bar = new BarChart();
   initControls();
+  loadPanel(pnl.minYear, pnl.maxYear, pnl.countries)
   setTitle(storyPanels[0].title);
 });
 window.addEventListener('resize', () => {
