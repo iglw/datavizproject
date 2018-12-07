@@ -14,7 +14,7 @@ export default class DataVizBar {
 
     var svg = d3.select("#barchart-container");
     svg.selectAll('*').remove();
-    var margin = { top: 10, right: 0, bottom: 20, left: 30 };
+    var margin = { top: 10, right: 0, bottom: 20, left: 40 };
     var width = +svg.attr("width") - margin.left - margin.right;
     var height = +svg.attr("height") - margin.top - margin.bottom;
 
@@ -39,7 +39,7 @@ export default class DataVizBar {
 
     g.append("g")
       .attr("class", "y axis")
-      .call(d3.axisLeft(y).tickValues(d3.range(0, maxTick * 1.2, maxTick / 5)).tickFormat(d => parseInt(d / 1000000)));
+      .call(d3.axisLeft(y).tickValues(d3.range(0, maxTick * 1.2, maxTick / 5)).tickFormat(d => parseInt(d / 1000000) + 'M'));
 
     g.selectAll(".bar")
       .data(data)

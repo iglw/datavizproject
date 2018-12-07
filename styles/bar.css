@@ -27,3 +27,11 @@
   padding: 14px;
   text-align: center;
 }
+
+#bar-title {
+  left: 100px;
+  position: absolute;
+  bottom: 300px;
+  font-weight: bold;
+  font-size: 21px;
+}

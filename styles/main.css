@@ -66,20 +66,29 @@ h3 {
   position: absolute;
   bottom: 0;
   left: 550px;
+  margin-bottom: 14px;
 }
 
 #panelInfo h3 {
   margin: 0;
   font-size: 20pt;
-  margin: 14px;
+  margin: 7px 0;
 }
 
 .datamaps-arc {
   stroke-linecap: unset !important;
 }
 
-.hover-info {
+.hoverinfo {
   box-shadow: none !important;
+  min-width: 80px;
+  padding: 14px !important;
+  text-align: center;
+  height: auto;
+  font-family: 'Didact Gothic', sans-serif;
+  display: block;
+  font-size: 16px !important;
+  font-weight: bold;
 }
 
 .datamaps-subunit:hover {
@@ -105,3 +114,28 @@ h3 {
   height: 64px;
   width: 64px;
 } */
+
+#picto-container-icons img {
+  width: 50px;
+  height: 50px;
+}
+
+.icon-div {
+  /* border-radius: 50%; */
+  background-color: rgba(169, 120, 120, 0.8);
+  display: inline-block;
+  width: 50px;
+  height: 50px;
+  padding: 5px;
+  margin: 17px 10px 20px 0;
+  overflow: hidden;
+}
+.icon-div.grey {
+  margin-left: -10px;
+  background-color: rgba(160, 160, 160, 0.8);
+  position: relative;
+}
+.icon-div.grey img {
+  position: absolute;
+  right: 5px;
+}

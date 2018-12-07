@@ -71,8 +71,6 @@ export default class DataVizMap {
       }
     });
     this.datamap.arc(arcs);
-    
-    //console.log(groupedDataArr.filter(d => d.origin === focusCountries[0]));
   }
 
 }

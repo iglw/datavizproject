@@ -1,11 +1,13 @@
 import 'core-js';
 import DataVizMap from './dataVizMap';
-import BarChart from './dataVizBar';
+import DataVizBar from './dataVizBar';
+import DataVizPicto from './dataVizPicto';
 import refugees from '../data/refugees';
 import * as d3 from 'd3';
 
 let map = null;
 let bar = null;
+let picto = null;
 let currentPanel = 0;
 let hoverBar = false;
 
@@ -26,14 +28,14 @@ const storyPanels = [
   new StoryPanel('Iraq War (2003-2011)', 2003, 2011, ['IRQ']),
   new StoryPanel('War in Syria (2011-2016+)', 2011, 2016, ['SYR']),
   new StoryPanel('South Sudanese Civil War (2013-2015)', 2013, 2015, ['SSD']),
-  new StoryPanel('Top Refugees Origin Countries 1975-2016', 1975, 2016, []),
+  new StoryPanel('Top Areas of Displacement 1975-2016', 1975, 2016, []),
 ];
 
 function getPanelData(yearMin, yearMax) {
   const originCounter = {};
   const invalidCountryCodes = ['XXY'];
   const numberToLoad = 10;
-
+  let grandTotal = 0;
   const filteredData = refugees.filter(r => r[2] >= yearMin && r[2] <= yearMax)
     .map(r => {
       const data = {
@@ -50,6 +52,7 @@ function getPanelData(yearMin, yearMax) {
           value: data.count
         };
       }
+      grandTotal += data.count;
       return data;
     });
 
@@ -80,46 +83,58 @@ function getPanelData(yearMin, yearMax) {
   }
 
   const groupedDataArr = Object.keys(groupedData).map(key => groupedData[key]);
-  return { groupedDataArr, totals };
+  return { groupedDataArr, totals, grandTotal };
 }
 
 function loadPanel(minYear, maxYear, countries) {
   const numYears = maxYear - minYear + 1;
-  const { groupedDataArr, totals } = getPanelData(minYear, maxYear);
+  const { groupedDataArr, totals, grandTotal } = getPanelData(minYear, maxYear);
   map.loadArcs(groupedDataArr, numYears, countries);
   bar.loadBars(groupedDataArr, numYears, countries, totals, map);
+  picto.loadPicto(countries[0], totals);
 
-  //console.log(countries[0], total[countries[0]].toLocaleString());
+  // const asMil = (val) => Math.round(val * 10 / 1000000 ) / 10;
+  // document.getElementById('picto-container')
+  //   .innerText = asMil(totals[countries[0]]) + "/" + asMil(grandTotal) + ' million';
 }
 
 function initControls() {
   document.getElementById('previous-pnl-btn').addEventListener('mousedown', () => {
     if (currentPanel === 0) return;
     currentPanel--;
+    if (currentPanel === 0) d3.select('#previous-pnl-btn').style('opacity', '0.3');
+    d3.select('#next-pnl-btn').style('opacity', '1');
     const pnl = storyPanels[currentPanel];
     loadPanel(pnl.minYear, pnl.maxYear, pnl.countries)
-    setTitle(pnl.title);
+    setTitle(pnl.minYear, pnl.maxYear, pnl.title);
   });
   document.getElementById('next-pnl-btn').addEventListener('mousedown', () => {
     if (currentPanel === storyPanels.length - 1) return;
     currentPanel++;
+    if (currentPanel === storyPanels.length - 1) d3.select('#next-pnl-btn').style('opacity', '0.3');
+    d3.select('#previous-pnl-btn').style('opacity', '1');
     const pnl = storyPanels[currentPanel];
     loadPanel(pnl.minYear, pnl.maxYear, pnl.countries);
-    setTitle(pnl.title);
+    setTitle(pnl.minYear, pnl.maxYear, pnl.title);
   });
 }
 
-function setTitle(title) {
+function setTitle(minYear, maxYear, title) {
+  var numYears = maxYear - minYear + 1;
   document.getElementById('pnl-title').innerText = title;
+  document.getElementById('bar-title-year').innerText = minYear !== maxYear ? `${minYear}-${maxYear}`: minYear;
+  document.getElementById('bar-title-length').innerText = ` (over ${numYears} yr${numYears > 1 ? 's' : ''})`;
 }
 
 window.addEventListener('load', () => {
   const pnl = storyPanels[currentPanel];
   map = new DataVizMap();
-  bar = new BarChart();
+  bar = new DataVizBar();
+  picto = new DataVizPicto();
   initControls();
   loadPanel(pnl.minYear, pnl.maxYear, pnl.countries)
-  setTitle(storyPanels[0].title);
+  setTitle(pnl.minYear, pnl.maxYear, storyPanels[0].title);
+  d3.select('#previous-pnl-btn').style('opacity', '0.3');
 });
 window.addEventListener('resize', () => {
   map.resize();

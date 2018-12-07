@@ -146204,7 +146204,7 @@ var DataVizBar = function () {
 
       var svg = d3.select("#barchart-container");
       svg.selectAll('*').remove();
-      var margin = { top: 10, right: 0, bottom: 20, left: 30 };
+      var margin = { top: 10, right: 0, bottom: 20, left: 40 };
       var width = +svg.attr("width") - margin.left - margin.right;
       var height = +svg.attr("height") - margin.top - margin.bottom;
 
@@ -146230,7 +146230,7 @@ var DataVizBar = function () {
       g.append("g").attr("class", "x axis").attr("transform", 'translate(0, ' + height + ')').call(d3.axisBottom(x).ticks(1));
 
       g.append("g").attr("class", "y axis").call(d3.axisLeft(y).tickValues(d3.range(0, maxTick * 1.2, maxTick / 5)).tickFormat(function (d) {
-        return parseInt(d / 1000000);
+        return parseInt(d / 1000000) + 'M';
       }));
 
       g.selectAll(".bar").data(data).enter().append("rect").attr("class", function (d) {
@@ -146258,7 +146258,7 @@ var DataVizBar = function () {
 
 exports.default = DataVizBar;
 
-},{"../data/countries.json":1,"./utilities":382,"d3":374}],380:[function(require,module,exports){
+},{"../data/countries.json":1,"./utilities":383,"d3":374}],380:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -146354,8 +146354,6 @@ var DataVizMap = function () {
         };
       });
       this.datamap.arc(arcs);
-
-      //console.log(groupedDataArr.filter(d => d.origin === focusCountries[0]));
     }
   }]);
 
@@ -146364,7 +146362,85 @@ var DataVizMap = function () {
 
 exports.default = DataVizMap;
 
-},{"../data/countries.json":1,"./colors":378,"./utilities":382,"d3":374,"d3-geo":357,"datamaps":375}],381:[function(require,module,exports){
+},{"../data/countries.json":1,"./colors":378,"./utilities":383,"d3":374,"d3-geo":357,"datamaps":375}],381:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _utilities = require('./utilities');
+
+var _countries = require('../data/countries.json');
+
+var _countries2 = _interopRequireDefault(_countries);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var DataVizPicto = function () {
+  function DataVizPicto() {
+    _classCallCheck(this, DataVizPicto);
+  }
+
+  _createClass(DataVizPicto, [{
+    key: 'loadPicto',
+    value: function loadPicto(country, totals) {
+      var torontoPopulation = 2.732; // million
+      var refugees = totals[country];
+      var asMil = function asMil(val) {
+        return Math.round(val * 10 / 1000000) / 10;
+      };
+      var times = Math.round(asMil(refugees) / torontoPopulation * 10) / 10;
+      document.getElementById('picto-container-text').innerHTML = times ? "During this period, " + asMil(refugees) + " refugees were displaced from " + (0, _utilities.normalizeCountryName)(_countries2.default, country) + "<br/>That's approximately " + times + " times the population of Toronto." : "";
+
+      var icons = document.getElementById('picto-container-icons');
+      icons.innerHTML = "";
+
+      for (var i = 0; i < parseInt(times); i++) {
+        var div = document.createElement("div");
+        div.className = "icon-div";
+        var img = document.createElement("img");
+        img.src = "assets/toronto.svg";
+        div.appendChild(img);
+        icons.appendChild(div);
+      }
+
+      if (times != parseInt(times)) {
+        var fractional = times - parseInt(times);
+        var div = document.createElement("div");
+        div.className = "icon-div";
+        div.style.width = fractional * 50 - 5 + 'px';
+        var img = document.createElement("img");
+        img.src = "assets/toronto.svg";
+        div.appendChild(img);
+        icons.appendChild(div);
+
+        if (!times) {
+          div.style.visibility = "hidden";
+          return;
+        }
+
+        var gdiv = document.createElement("div");
+        gdiv.className = "icon-div grey";
+        gdiv.style.width = (1 - fractional) * 50 - 5 + 'px';
+        var gimg = document.createElement("img");
+        gimg.src = "assets/torontogrey.svg";
+        gdiv.appendChild(gimg);
+        icons.appendChild(gdiv);
+      }
+    }
+  }]);
+
+  return DataVizPicto;
+}();
+
+exports.default = DataVizPicto;
+
+},{"../data/countries.json":1,"./utilities":383}],382:[function(require,module,exports){
 'use strict';
 
 require('core-js');
@@ -146376,6 +146452,10 @@ var _dataVizMap2 = _interopRequireDefault(_dataVizMap);
 var _dataVizBar = require('./dataVizBar');
 
 var _dataVizBar2 = _interopRequireDefault(_dataVizBar);
+
+var _dataVizPicto = require('./dataVizPicto');
+
+var _dataVizPicto2 = _interopRequireDefault(_dataVizPicto);
 
 var _refugees = require('../data/refugees');
 
@@ -146393,6 +146473,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var map = null;
 var bar = null;
+var picto = null;
 var currentPanel = 0;
 var hoverBar = false;
 
@@ -146405,13 +146486,13 @@ var StoryPanel = function StoryPanel(title, minYear, maxYear, countries) {
   this.countries = countries;
 };
 
-var storyPanels = [new StoryPanel('Vietnam War (1975-1995)', 1975, 1995, ['VNM']), new StoryPanel('Iran-Iraq War (1980-1988)', 1980, 1988, ['IRQ']), new StoryPanel('Civil War in Mozambique (1976-1992)', 1976, 1992, ['MOZ']), new StoryPanel('Rwandan Genocide (1994)', 1993, 1996, ['RWA']), new StoryPanel('Iraq War (2003-2011)', 2003, 2011, ['IRQ']), new StoryPanel('War in Syria (2011-2016+)', 2011, 2016, ['SYR']), new StoryPanel('South Sudanese Civil War (2013-2015)', 2013, 2015, ['SSD']), new StoryPanel('Top Refugees Origin Countries 1975-2016', 1975, 2016, [])];
+var storyPanels = [new StoryPanel('Vietnam War (1975-1995)', 1975, 1995, ['VNM']), new StoryPanel('Iran-Iraq War (1980-1988)', 1980, 1988, ['IRQ']), new StoryPanel('Civil War in Mozambique (1976-1992)', 1976, 1992, ['MOZ']), new StoryPanel('Rwandan Genocide (1994)', 1993, 1996, ['RWA']), new StoryPanel('Iraq War (2003-2011)', 2003, 2011, ['IRQ']), new StoryPanel('War in Syria (2011-2016+)', 2011, 2016, ['SYR']), new StoryPanel('South Sudanese Civil War (2013-2015)', 2013, 2015, ['SSD']), new StoryPanel('Top Areas of Displacement 1975-2016', 1975, 2016, [])];
 
 function getPanelData(yearMin, yearMax) {
   var originCounter = {};
   var invalidCountryCodes = ['XXY'];
   var numberToLoad = 10;
-
+  var grandTotal = 0;
   var filteredData = _refugees2.default.filter(function (r) {
     return r[2] >= yearMin && r[2] <= yearMax;
   }).map(function (r) {
@@ -146429,6 +146510,7 @@ function getPanelData(yearMin, yearMax) {
         value: data.count
       };
     }
+    grandTotal += data.count;
     return data;
   });
 
@@ -146467,7 +146549,7 @@ function getPanelData(yearMin, yearMax) {
   var groupedDataArr = Object.keys(groupedData).map(function (key) {
     return groupedData[key];
   });
-  return { groupedDataArr: groupedDataArr, totals: totals };
+  return { groupedDataArr: groupedDataArr, totals: totals, grandTotal: grandTotal };
 }
 
 function loadPanel(minYear, maxYear, countries) {
@@ -146475,42 +146557,55 @@ function loadPanel(minYear, maxYear, countries) {
 
   var _getPanelData = getPanelData(minYear, maxYear),
       groupedDataArr = _getPanelData.groupedDataArr,
-      totals = _getPanelData.totals;
+      totals = _getPanelData.totals,
+      grandTotal = _getPanelData.grandTotal;
 
   map.loadArcs(groupedDataArr, numYears, countries);
   bar.loadBars(groupedDataArr, numYears, countries, totals, map);
+  picto.loadPicto(countries[0], totals);
 
-  //console.log(countries[0], total[countries[0]].toLocaleString());
+  // const asMil = (val) => Math.round(val * 10 / 1000000 ) / 10;
+  // document.getElementById('picto-container')
+  //   .innerText = asMil(totals[countries[0]]) + "/" + asMil(grandTotal) + ' million';
 }
 
 function initControls() {
   document.getElementById('previous-pnl-btn').addEventListener('mousedown', function () {
     if (currentPanel === 0) return;
     currentPanel--;
+    if (currentPanel === 0) d3.select('#previous-pnl-btn').style('opacity', '0.3');
+    d3.select('#next-pnl-btn').style('opacity', '1');
     var pnl = storyPanels[currentPanel];
     loadPanel(pnl.minYear, pnl.maxYear, pnl.countries);
-    setTitle(pnl.title);
+    setTitle(pnl.minYear, pnl.maxYear, pnl.title);
   });
   document.getElementById('next-pnl-btn').addEventListener('mousedown', function () {
     if (currentPanel === storyPanels.length - 1) return;
     currentPanel++;
+    if (currentPanel === storyPanels.length - 1) d3.select('#next-pnl-btn').style('opacity', '0.3');
+    d3.select('#previous-pnl-btn').style('opacity', '1');
     var pnl = storyPanels[currentPanel];
     loadPanel(pnl.minYear, pnl.maxYear, pnl.countries);
-    setTitle(pnl.title);
+    setTitle(pnl.minYear, pnl.maxYear, pnl.title);
   });
 }
 
-function setTitle(title) {
+function setTitle(minYear, maxYear, title) {
+  var numYears = maxYear - minYear + 1;
   document.getElementById('pnl-title').innerText = title;
+  document.getElementById('bar-title-year').innerText = minYear !== maxYear ? minYear + '-' + maxYear : minYear;
+  document.getElementById('bar-title-length').innerText = ' (over ' + numYears + ' yr' + (numYears > 1 ? 's' : '') + ')';
 }
 
 window.addEventListener('load', function () {
   var pnl = storyPanels[currentPanel];
   map = new _dataVizMap2.default();
   bar = new _dataVizBar2.default();
+  picto = new _dataVizPicto2.default();
   initControls();
   loadPanel(pnl.minYear, pnl.maxYear, pnl.countries);
-  setTitle(storyPanels[0].title);
+  setTitle(pnl.minYear, pnl.maxYear, storyPanels[0].title);
+  d3.select('#previous-pnl-btn').style('opacity', '0.3');
 });
 window.addEventListener('resize', function () {
   map.resize();
@@ -146533,7 +146628,7 @@ window.addEventListener("mousemove", function (e) {
   }
 });
 
-},{"../data/refugees":2,"./dataVizBar":379,"./dataVizMap":380,"core-js":3,"d3":374}],382:[function(require,module,exports){
+},{"../data/refugees":2,"./dataVizBar":379,"./dataVizMap":380,"./dataVizPicto":381,"core-js":3,"d3":374}],383:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -146544,4 +146639,4 @@ function normalizeCountryName(countries, iso3Code, datamapName) {
   return countries[iso3Code] ? countries[iso3Code].gName : datamapName;
 };
 
-},{}]},{},[381]);
+},{}]},{},[382]);
