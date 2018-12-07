@@ -24,11 +24,14 @@ export default class DataVizMap {
       },
       //projection: 'mercator',
       fills: {
-        defaultFill: COLORS.BLACK
+        defaultFill: COLORS.WHITE
       },
       geographyConfig: {
-        highlightFillColor: COLORS.DARKGREY,
-        highlightBorderColor: COLORS.WHITE,
+        highlightFillColor: COLORS.LIGHTGREY,
+        highlightBorderColor: COLORS.DARKGREY,
+        highlightBorderWidth: 1,
+        borderColor: COLORS.DARKGREY,
+        borderWidth: 1,
         popupTemplate: (geography, data) => {
           return `<div class="hoverinfo"><strong>${normalizeCountryName(countries, geography.id, geography.properties.name)}</strong></div>`;
         }
@@ -43,7 +46,7 @@ export default class DataVizMap {
   loadArcs(yearMin, yearMax, focusCountries) {
     const originCounter = {};
     const invalidCountryCodes = ['XXY'];
-    const numberToLoad = 20;
+    const numberToLoad = 10;
     const numYears = yearMax - yearMin + 1;
 
     const filteredData = refugees.filter(r => r[2] >= yearMin && r[2] <= yearMax)
@@ -71,7 +74,7 @@ export default class DataVizMap {
       .slice(0, numberToLoad)
       .map(c => c.key);
     let topCountryData = filteredData
-      .filter(data => topCountryCodes.indexOf(data.origin) > -1 && data.count > 10);
+      .filter(data => topCountryCodes.indexOf(data.origin) > -1 && data.count > 1000);
 
     // Total data across years by destination
     let groupedData = {};
@@ -94,20 +97,33 @@ export default class DataVizMap {
     const groupedDataArr = Object.keys(groupedData).map(key => groupedData[key]);
     let arcs = groupedDataArr.map(data => {
       const c = data.count / numYears;
+      const idx = focusCountries 
+        ? focusCountries.indexOf(data.origin)
+        : topCountryCodes.indexOf(data.origin);
+      //const strokeColor = (opacity) => `rgba(119, 70, 70, ${opacity})`;
+      const strokeColor = (opacity) => `rgba(169, 120, 120, ${opacity})`;
       return {
-        origin: data.origin,
-        destination: data.destination,
+        origin: {
+          latitude: countries[data.origin].latitude,
+          longitude: countries[data.origin].longitude
+        },
+        destination: {
+          latitude: countries[data.destination].latitude,
+          longitude: countries[data.destination].longitude
+        },
         options: {
-          strokeWidth: c > 80000 ? 4
-            : c > 40000 ? 3.5 
-            : c > 20000 ? 3 
-            : c > 10000 ? 2.5 
-            : c > 5000 ? 2 
-            : c > 2500 ? 1.5 
-            : 1,
-          strokeColor: (focusCountries ? focusCountries.indexOf(data.origin) === 0 : topCountryCodes.indexOf(data.origin) === 0)
-            ? COLORS.ORANGE
-            : 'rgba(119, 70, 70, 0.90)',
+          strokeWidth: c > 160000 ? 4
+            : c > 80000 ? 3.5
+            : c > 40000 ? 3 
+            : c > 20000 ? 2.5 
+            : c > 10000 ? 2 
+            : c > 5000 ? 1.5 
+            : c > 2500 ? 1 
+            : 0.5,
+          strokeColor: idx == 0 ? COLORS.RED
+            // : idx < 11 ? strokeColor(0.4)
+            // : idx < 21 ? strokeColor(0.4)
+              : strokeColor(0.6),
           animationSpeed: 2200
         }
       }
