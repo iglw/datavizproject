@@ -2,8 +2,8 @@ body {
   background-color: #c8d2da;
   margin: 0;
   padding: 0;
-  overflow-x: hidden;
-  overflow-y: hidden;
+  /* overflow-x: hidden;
+  overflow-y: hidden; */
   color: #333;
   font-family: 'Didact Gothic', sans-serif;
 }
