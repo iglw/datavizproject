@@ -12,8 +12,7 @@
     "core-js": "^2.5.7",
     "d3": "^5.7.0",
     "d3-geo": "^1.11.1",
-    "datamaps": "^0.5.9",
-    "topojson": "^3.0.2"
+    "datamaps": "^0.5.9"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

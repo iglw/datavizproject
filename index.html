@@ -27,15 +27,17 @@
         </svg>
       </div>
       <div id="info-btn" class="controlPnl-btn">
-          <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
-          </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z" />
+        </svg>
       </div>
     </div>
     <div id="bar-title">
-      Top Refugee Origin
-      <br/>Countries <span id="bar-title-year"></span>
-      <br/><span id="bar-title-length"></span>
+      <div>
+        Top Refugee Origin
+        <br />Countries <span id="bar-title-year"></span>
+      </div>
+      <span id="bar-title-length"></span>
     </div>
     <div id="titlePnl">
       <h1 class="title">Lines of Conflict</h1>
@@ -46,6 +48,51 @@
       <div id="picto-container-text"></div>
       <div id="picto-container-icons">
       </div>
+    </div>
+
+    <div id="about-sources">
+      <div id="close-info-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/><path d="M0 0h24v24H0z" fill="none"/></svg>
+      </div>
+      <p>
+        Created for OCADU's Introduction to Visual Analytics course (CSDM-N150).
+      </p>
+      <p>
+        <strong>Data Sources:</strong>
+        <ul>
+          <li>
+            <a href="http://data.un.org/Data.aspx?q=refugees&d=UNHCR&f=indID:Type-Ref&c=0,1,2,3,4,5,6&s=yr:desc,asyEngName:asc,oriEngName:asc&v=1">
+              UNdata - Table with data on Refugees. From UNHCR Statistical Database.
+            </a>
+          </li>
+          <li>
+            <a href="https://developers.google.com/public-data/docs/canonical/countries_csv">
+              Google Developers - countries.csv
+            </a>
+          </li>
+        </ul>
+      </p>
+      <p>
+        <strong>Icon Sources:</strong>
+        <ul>
+          <li>
+              Toronto icon made by <a href="https://www.freepik.com/" title="Freepik">Freepik</a> 
+              from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> 
+              is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a>
+          </li>
+          <li>
+            <a href="https://material.io/tools/icons/">Google - Material Icons</a>
+          </li>
+        </ul>
+      </p>
+      <p>
+        <strong>Libraries Used:</strong>
+        <ul>
+          <li> <a href="https://d3js.org/">d3</a> </li>
+        <li> <a href="https://github.com/d3/d3-geo">d3-geo</a> </li>
+        <li> <a href="http://datamaps.github.io/">datamaps</a> </li>
+        </ul>
+      </p>
     </div>
   </div>
 </body>

@@ -8,15 +8,16 @@ export default class DataVizPicto {
 
 
 
-  loadPicto(country, totals) {
+  loadPicto(country, totals, numYears) {
     const torontoPopulation = 2.732; // million
     const refugees = totals[country];
     const asMil = (val) => Math.round(val * 10 / 1000000) / 10;
     const times = Math.round((asMil(refugees) / torontoPopulation) * 10) / 10;
     document.getElementById('picto-container-text').innerHTML =
-      times ? "During this period, " + asMil(refugees) + " refugees were displaced from " +
-        normalizeCountryName(countries, country) + "<br/>That's approximately " + times +
-        " times the population of Toronto." : "";
+      times ? "Over <span class='bold'>" + numYears + " years</span>, <span class='red bold'>" + asMil(refugees) + 
+        " million</span> refugees were displaced from <span class='red bold'>" +
+        normalizeCountryName(countries, country) + "</span>.<br/>That's approximately <span class='bold'>" + times +
+        " times</span> the current population of Toronto." : "";
 
     const icons = document.getElementById('picto-container-icons');
     icons.innerHTML = "";

@@ -146388,14 +146388,14 @@ var DataVizPicto = function () {
 
   _createClass(DataVizPicto, [{
     key: 'loadPicto',
-    value: function loadPicto(country, totals) {
+    value: function loadPicto(country, totals, numYears) {
       var torontoPopulation = 2.732; // million
       var refugees = totals[country];
       var asMil = function asMil(val) {
         return Math.round(val * 10 / 1000000) / 10;
       };
       var times = Math.round(asMil(refugees) / torontoPopulation * 10) / 10;
-      document.getElementById('picto-container-text').innerHTML = times ? "During this period, " + asMil(refugees) + " refugees were displaced from " + (0, _utilities.normalizeCountryName)(_countries2.default, country) + "<br/>That's approximately " + times + " times the population of Toronto." : "";
+      document.getElementById('picto-container-text').innerHTML = times ? "Over <span class='bold'>" + numYears + " years</span>, <span class='red bold'>" + asMil(refugees) + " million</span> refugees were displaced from <span class='red bold'>" + (0, _utilities.normalizeCountryName)(_countries2.default, country) + "</span>.<br/>That's approximately <span class='bold'>" + times + " times</span> the current population of Toronto." : "";
 
       var icons = document.getElementById('picto-container-icons');
       icons.innerHTML = "";
@@ -146486,7 +146486,7 @@ var StoryPanel = function StoryPanel(title, minYear, maxYear, countries) {
   this.countries = countries;
 };
 
-var storyPanels = [new StoryPanel('Vietnam War (1975-1995)', 1975, 1995, ['VNM']), new StoryPanel('Iran-Iraq War (1980-1988)', 1980, 1988, ['IRQ']), new StoryPanel('Civil War in Mozambique (1976-1992)', 1976, 1992, ['MOZ']), new StoryPanel('Rwandan Genocide (1994)', 1993, 1996, ['RWA']), new StoryPanel('Iraq War (2003-2011)', 2003, 2011, ['IRQ']), new StoryPanel('War in Syria (2011-2016+)', 2011, 2016, ['SYR']), new StoryPanel('South Sudanese Civil War (2013-2015)', 2013, 2015, ['SSD']), new StoryPanel('Top Areas of Displacement 1975-2016', 1975, 2016, [])];
+var storyPanels = [new StoryPanel('Post Vietnam War (1975-1995)', 1975, 1995, ['VNM']), new StoryPanel('Iran-Iraq War (1980-1988)', 1980, 1988, ['IRQ']), new StoryPanel('Civil War in Mozambique (1977-1992)', 1977, 1992, ['MOZ']), new StoryPanel('Rwandan Genocide (1994)', 1993, 1996, ['RWA']), new StoryPanel('Breakup of Yugoslavia (1994-1995)', 1994, 1995, ['BIH']), new StoryPanel('Iraq War (2003-2011)', 2003, 2011, ['IRQ']), new StoryPanel('War in Syria (2011-ongoing)', 2011, 2016, ['SYR']), new StoryPanel('South Sudanese Civil War (2013-ongoing)', 2013, 2016, ['SSD']), new StoryPanel('Top Areas of Displacement 1975-2016', 1975, 2016, [])];
 
 function getPanelData(yearMin, yearMax) {
   var originCounter = {};
@@ -146562,11 +146562,7 @@ function loadPanel(minYear, maxYear, countries) {
 
   map.loadArcs(groupedDataArr, numYears, countries);
   bar.loadBars(groupedDataArr, numYears, countries, totals, map);
-  picto.loadPicto(countries[0], totals);
-
-  // const asMil = (val) => Math.round(val * 10 / 1000000 ) / 10;
-  // document.getElementById('picto-container')
-  //   .innerText = asMil(totals[countries[0]]) + "/" + asMil(grandTotal) + ' million';
+  picto.loadPicto(countries[0], totals, numYears);
 }
 
 function initControls() {
@@ -146588,13 +146584,19 @@ function initControls() {
     loadPanel(pnl.minYear, pnl.maxYear, pnl.countries);
     setTitle(pnl.minYear, pnl.maxYear, pnl.title);
   });
+  document.getElementById('info-btn').addEventListener('mousedown', function () {
+    d3.select('#about-sources').style('display', 'block');
+  });
+  document.getElementById('close-info-btn').addEventListener('mousedown', function () {
+    d3.select('#about-sources').style('display', 'none');
+  });
 }
 
 function setTitle(minYear, maxYear, title) {
   var numYears = maxYear - minYear + 1;
   document.getElementById('pnl-title').innerText = title;
   document.getElementById('bar-title-year').innerText = minYear !== maxYear ? minYear + '-' + maxYear : minYear;
-  document.getElementById('bar-title-length').innerText = ' (over ' + numYears + ' yr' + (numYears > 1 ? 's' : '') + ')';
+  document.getElementById('bar-title-length').innerText = ' (over ' + numYears + ' year' + (numYears > 1 ? 's' : '') + ')';
 }
 
 window.addEventListener('load', function () {
@@ -146612,20 +146614,28 @@ window.addEventListener('resize', function () {
 });
 
 window.addEventListener("mousemove", function (e) {
-  // hover issues with chart overlapping map
-  if (e.clientX < 74 && e.clientY > 150 || e.clientX < 280 && e.clientY > 350 || e.clientX < 400 && e.clientY > 600) {
-    if (!hoverBar) {
-      hoverBar = true;
-      d3.select('#barchart-container').style("z-index", 1);
-      d3.select('#map-container').style("z-index", 0);
+  var bars = document.querySelectorAll('#barchart-container .bar');
+  var anyHover = false;
+  // Any hovering
+  for (var i = 0; i < bars.length; i++) {
+    var boundingBox = bars[i].getBoundingClientRect();
+    if (e.clientX > boundingBox.left && e.clientX < boundingBox.right && e.clientY > boundingBox.top && e.clientY < boundingBox.bottom) {
+      anyHover = true;
+      if (!hoverBar) {
+        d3.select('#barchart-container').style("z-index", 1);
+        d3.select('#map-container').style("z-index", 0);
+      }
+      break;
     }
-  } else {
+  }
+  // Not hovering
+  if (!anyHover) {
     if (hoverBar) {
-      hoverBar = false;
       d3.select('#barchart-container').style("z-index", 0);
       d3.select('#map-container').style("z-index", 1);
     }
   }
+  hoverBar = anyHover;
 });
 
 },{"../data/refugees":2,"./dataVizBar":379,"./dataVizMap":380,"./dataVizPicto":381,"core-js":3,"d3":374}],383:[function(require,module,exports){

@@ -35,3 +35,12 @@
   font-weight: bold;
   font-size: 21px;
 }
+
+#bar-title-length {
+  font-size: 18px;
+  font-style: italic;
+  font-weight: normal;
+  position: relative;
+  top: -4px;
+  right: 0;
+}
