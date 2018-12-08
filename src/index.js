@@ -104,6 +104,7 @@ function initControls() {
     const pnl = storyPanels[currentPanel];
     loadPanel(pnl.minYear, pnl.maxYear, pnl.countries)
     setTitle(pnl.minYear, pnl.maxYear, pnl.title);
+    updatePageNum();
   });
   document.getElementById('next-pnl-btn').addEventListener('mousedown', () => {
     if (currentPanel === storyPanels.length - 1) return;
@@ -113,6 +114,7 @@ function initControls() {
     const pnl = storyPanels[currentPanel];
     loadPanel(pnl.minYear, pnl.maxYear, pnl.countries);
     setTitle(pnl.minYear, pnl.maxYear, pnl.title);
+    updatePageNum();
   });
   document.getElementById('info-btn').addEventListener('mousedown', () => {
     d3.select('#about-sources').style('display', 'block');
@@ -120,6 +122,10 @@ function initControls() {
   document.getElementById('close-info-btn').addEventListener('mousedown', () => {
     d3.select('#about-sources').style('display', 'none');
   });
+}
+
+function updatePageNum() {
+  document.getElementById('pg-num').innerText = (currentPanel + 1) + '/' + storyPanels.length;
 }
 
 function setTitle(minYear, maxYear, title) {
@@ -138,6 +144,7 @@ window.addEventListener('load', () => {
   loadPanel(pnl.minYear, pnl.maxYear, pnl.countries)
   setTitle(pnl.minYear, pnl.maxYear, storyPanels[0].title);
   d3.select('#previous-pnl-btn').style('opacity', '0.3');
+  updatePageNum();
 });
 window.addEventListener('resize', () => {
   map.resize();

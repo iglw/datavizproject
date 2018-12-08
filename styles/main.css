@@ -140,6 +140,11 @@ h3 {
 .controlPnl-btn:hover svg path {
   fill: #994400;
 }
+#pg-num {
+  display: inline-block;
+  bottom: 26px;
+  position: relative;
+}
 
 #picto-container-icons img {
   width: 50px;
